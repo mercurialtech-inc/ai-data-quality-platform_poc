@@ -75,3 +75,10 @@ def test_whitespace_stripping(valid_definition):
     definition = BusinessDefinition(**valid_definition)
 
     assert definition.name == "Gross Revenue"
+
+def test_superseded_status(valid_definition):
+    valid_definition["status"] = "superseded"
+
+    definition = BusinessDefinition(**valid_definition)
+
+    assert definition.status == "superseded"

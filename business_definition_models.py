@@ -16,4 +16,4 @@ class BusinessDefinition(BaseModel):
     formula: NonEmptyString
     grain: NonEmptyString
     rationale: NonEmptyString
-    status: Literal["draft", "approved"] = "draft"
+    status: Literal["draft", "approved", "superseded"] = "draft"
