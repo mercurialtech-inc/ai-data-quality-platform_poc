@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from schemas import RuleConfig, RulePreviewRequest,HealthResponse, RulePreviewResponse
 from service import run_checks
 from rules import DataQualityRule
@@ -7,6 +7,10 @@ from recommendation_service import generate_validated_recommendations
 from request_context import request_id_var
 import uuid
 from logging_config import configure_logging
+from database import engine
+from business_definition_repository import PostgreSQLBusinessDefinitionRepository
+from business_definition_service import BusinessDefinitionService
+from business_definition_models import BusinessDefinition
 
 app = FastAPI()
 configure_logging()
@@ -67,4 +71,29 @@ def recommend_rules_endpoint(request: RecommendationRequest):
         raise HTTPException(
             status_code=404,
             detail=f"Key id {request.kpi_id} not found"
+        )
+
+
+def get_business_definition_service() -> BusinessDefinitionService:
+    # Create a PostgreSQL repository using engine
+    repo = PostgreSQLBusinessDefinitionRepository(engine)
+
+    # Create a BusinessDefinitionService using that repository
+    service = BusinessDefinitionService(repo)
+
+    # Return the service
+    return service
+
+@app.get("/definitions/{definition_id}", response_model=BusinessDefinition)
+def get_definition(
+    definition_id: str,
+    service: BusinessDefinitionService = Depends(get_business_definition_service)
+):
+    try:
+        return service.require_approved(definition_id)
+
+    except LookupError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No approved definition found for {definition_id}"
         )
