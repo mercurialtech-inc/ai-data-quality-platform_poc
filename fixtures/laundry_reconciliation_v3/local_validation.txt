@@ -1,0 +1,9 @@
+LOCAL VALIDATION (SQLite relational SQL, integer cents; no BigQuery execution)
+{'payments': 810, 'refunds': 180, 'payouts': 100, 'payout_components': 1010, 'bank_entries': 139, 'reported_revenue': 200}
+22 integrity checks: zero violations
+200 daily revenue rows match independent Python oracle: {'PASS': 180, 'FAIL': 20}
+100 payout rows match independent Python oracle: {'PASS': 86, 'FAIL': 12, 'PENDING': 2}
+Amount statuses: {'PASS': 90, 'FAIL': 8, 'PENDING': 2}
+Timing statuses: {'PASS': 89, 'FAIL': 9, 'PENDING': 2}
+Multi-entry payout statuses: {'PASS': 34, 'FAIL': 7}
+Bank event modes: {'normal': 86, 'short_split': 3, 'late_split': 2, 'missing': 1, 'excess_split': 1, 'short_single': 1, 'late_single': 2, 'excess_single': 1, 'late_excess': 1, 'pending_none': 1, 'pending_partial': 1}
